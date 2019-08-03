@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/brucebales/discounts-api/src/internal/dto"
 	"github.com/brucebales/discounts-api/src/internal/orders"
 )
 
@@ -14,7 +15,7 @@ func main() {
 	// })
 
 	//Hard-coding for testing but will have to replace with redis query
-	products := []orders.Product{
+	products := []dto.Product{
 		{
 			ID:          "B103",
 			Description: "Switch with motion detector",
