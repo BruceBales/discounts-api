@@ -1,6 +1,9 @@
 package dao
 
 import (
+	"fmt"
+
+	"github.com/brucebales/discounts-api/src/internal/config"
 	"github.com/go-redis/redis"
 )
 
@@ -9,8 +12,9 @@ type RedisConf struct {
 }
 
 func NewRedis() (*redis.Client, error) {
+	conf := config.GetConfig()
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     fmt.Sprintf("%s:6379", conf.RedisHost),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

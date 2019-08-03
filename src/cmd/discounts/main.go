@@ -11,10 +11,10 @@ import (
 
 func main() {
 	//Establish Redis connection
-	// redis, err := dao.NewRedis()
-	// if err != nil {
-	// 	fmt.Println("Could not connect to Redis: ", err)
-	// }
+	redis, err := dao.NewRedis()
+	if err != nil {
+		fmt.Println("Could not connect to Redis: ", err)
+	}
 	//Establish MySQL connection
 	mysql, err := dao.NewMysql()
 	if err != nil {
@@ -32,11 +32,11 @@ func main() {
 		if err != nil {
 			fmt.Println("Could not load products: ", err)
 		}
-		fmt.Println(products)
 		result, err := orders.GetOrder(r, products)
 		if err != nil {
 			fmt.Println("Could not get order: ", err)
 		}
+		redis.SAdd("discount_log", result.Order)
 		fmt.Fprintf(w, fmt.Sprintf("Order: %v\n", result.Order))
 		fmt.Fprintf(w, fmt.Sprintf("Discounts: %v\n", result.Discounts))
 		fmt.Fprintf(w, fmt.Sprintf("Total: %v\n", result.Total))
