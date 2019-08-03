@@ -1,15 +1,23 @@
 package dao
 
-import "github.com/go-redis/redis"
+import (
+	"github.com/go-redis/redis"
+)
 
 type RedisConf struct {
 	Address string
 }
 
-func GetRedis(rc *RedisConf) *redis.Client {
-	rdb := redis.NewClient(&redis.Options{
-		Addr: rc.Address,
+func NewRedis() (*redis.Client, error) {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
 	})
 
-	return rdb
+	err := client.Ping().Err()
+	if err != nil {
+		return nil, err
+	}
+	return client, nil
 }

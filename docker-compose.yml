@@ -1,13 +1,25 @@
 version: '3'
 
 services:
-  discounts:
+  discounts-web:
     build: .
     ports:
       - "8080:8080"
     links:
+      - mysql
       - redis
     environment:
-      - "REDIS_HOST=redis"
+      - REDIS_HOST=redis
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_PASSWORD=localtesting
   redis:
     image: redis
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./data/mysql:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=localtesting
+    ports:
+      - "3306:3306"

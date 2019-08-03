@@ -1,5 +1,10 @@
 package dto
 
+import (
+	"database/sql"
+	"encoding/json"
+)
+
 /*
 [
     {
@@ -40,4 +45,27 @@ type Product struct {
 	Description string  `json:"description"`
 	Category    int     `json:"category,string"`
 	Price       float64 `json:"price,string"`
+}
+
+//GetProducts populates the product list from a Redis DB entry
+func GetProducts(m *sql.DB) ([]Product, error) {
+	var productstr string
+	products := []Product{}
+	rows, err := m.Query("SELECT product_list FROM webstore.products WHERE id = 1")
+	if err != nil {
+		return products, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&productstr)
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal([]byte(productstr), &products)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return products, nil
 }
