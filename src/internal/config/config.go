@@ -10,7 +10,6 @@ type Config struct {
 	MysqlPort   string
 	MysqlDriver string
 
-	RedisUser string
 	RedisPass string
 	RedisHost string
 	RedisPort string
@@ -42,7 +41,6 @@ func GetConfig() Config {
 	}
 
 	//Redis Username and Password are intentionally blank on Localhost
-	redisUser := os.Getenv("REDIS_USER")
 	redisPass := os.Getenv("REDIS_PASS")
 	redisHost := os.Getenv("REDIS_HOST")
 	if redisHost == "" {
@@ -60,7 +58,6 @@ func GetConfig() Config {
 		MysqlPort:   mysqlPort,
 		MysqlDriver: mysqlDriver,
 
-		RedisUser: redisUser,
 		RedisPass: redisPass,
 		RedisHost: redisHost,
 		RedisPort: redisPort,
