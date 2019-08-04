@@ -47,7 +47,7 @@ type Product struct {
 	Price       float64 `json:"price,string"`
 }
 
-//GetProducts populates the product list from a Redis DB entry
+//GetProducts populates the product list from a MySQL DB entry
 func GetProducts(m *sql.DB) ([]Product, error) {
 	var productstr string
 	products := []Product{}

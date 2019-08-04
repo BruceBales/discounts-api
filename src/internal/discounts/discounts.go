@@ -40,7 +40,7 @@ func ToolDiscount(tools []dto.Item) (float64, string) {
 		sort.Float64s(prices)
 
 		//Grab price from first tool in sorted array, return discount
-		price := tools[0].UnitPrice
+		price := prices[0]
 		discount := price * 0.20
 		return discount, "FirstToolDiscount"
 	}
