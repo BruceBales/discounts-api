@@ -63,6 +63,30 @@ curl --request POST \
 }'
 ```
 
+Example response:
+
+```
+{
+  "Order": {
+    "id": "2",
+    "customer-id": "2",
+    "items": [
+      {
+        "product-id": "B102",
+        "quantity": "6",
+        "unit-price": "4.99",
+        "total": "24.95"
+      }
+    ],
+    "total": "24.95"
+  },
+  "Discounts": {
+    "switchDiscount": 4.99
+  },
+  "Total": 19.96
+}
+```
+
 After this request, we can also check for logs that are stored in Redis:
 
 ```
