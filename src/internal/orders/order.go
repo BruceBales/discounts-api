@@ -38,16 +38,14 @@ type Result struct {
 	Total     float64
 }
 
+//String returns a JSON string of the Result struct
 func (r *Result) String() (string, error) {
-	res := Result{
-		Order:     r.Order,
-		Discounts: r.Discounts,
-		Total:     r.Total,
-	}
-	resBytes, err := json.Marshal(res)
+	//Create byte slice of Marshal'ed result
+	resBytes, err := json.Marshal(r)
 	if err != nil {
 		return "", err
 	}
+	//Type-cast byte slice to string
 	str := string(resBytes)
 	return str, nil
 }
