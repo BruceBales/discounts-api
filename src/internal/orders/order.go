@@ -1,6 +1,10 @@
 package orders
 
-import "github.com/brucebales/discounts-api/src/internal/dto"
+import (
+	"encoding/json"
+
+	"github.com/brucebales/discounts-api/src/internal/dto"
+)
 
 /*
 Example order:
@@ -32,4 +36,18 @@ type Result struct {
 	Order     string
 	Discounts string
 	Total     float64
+}
+
+func (r *Result) String() (string, error) {
+	res := Result{
+		Order:     r.Order,
+		Discounts: r.Discounts,
+		Total:     r.Total,
+	}
+	resBytes, err := json.Marshal(res)
+	if err != nil {
+		return "", err
+	}
+	str := string(resBytes)
+	return str, nil
 }
