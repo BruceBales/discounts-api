@@ -22,6 +22,7 @@ func main() {
 		fmt.Println("Coult not connect to MySQL: ", err)
 		return
 	}
+	defer mysql.Close()
 
 	//Handle HTTP Requests
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
