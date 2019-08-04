@@ -84,6 +84,6 @@ The product list is stored in MySQL as a JSON array string called `product_list`
 A few things that I would like to complete if I end up having time:
 
 - More extensive unit testing in all packages
-- Better HTTP response codes
+- An authentication system using API keys
 - Further abstraction of discounts, allowing new discounts to be defined in a database.
   - Ideally, there would be a set of "discount type" functions that are simply plugging in variables that are grabbed from a MySQL table.

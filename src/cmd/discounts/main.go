@@ -14,11 +14,13 @@ func main() {
 	redis, err := dao.NewRedis()
 	if err != nil {
 		fmt.Println("Could not connect to Redis: ", err)
+		return
 	}
 	//Establish MySQL connection
 	mysql, err := dao.NewMysql()
 	if err != nil {
 		fmt.Println("Coult not connect to MySQL: ", err)
+		return
 	}
 
 	//Handle HTTP Requests
@@ -30,10 +32,12 @@ func main() {
 	http.HandleFunc("/api/order", func(w http.ResponseWriter, r *http.Request) {
 		products, err := dto.GetProducts(mysql)
 		if err != nil {
+			w.WriteHeader(500)
 			fmt.Println("Could not load products: ", err)
 		}
 		result, err := orders.GetOrder(r, products)
 		if err != nil {
+			w.WriteHeader(500)
 			fmt.Println("Could not get order: ", err)
 		}
 		redis.SAdd("discount_log", result.Order)
