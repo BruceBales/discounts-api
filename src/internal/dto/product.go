@@ -51,7 +51,7 @@ type Product struct {
 func GetProducts(m *sql.DB) ([]Product, error) {
 	var productstr string
 	products := []Product{}
-	rows, err := m.Query("SELECT product_list FROM webstore.products WHERE id = 1")
+	rows, err := m.Query("SELECT product_list FROM webstore.product_sets WHERE id = 1")
 	if err != nil {
 		return products, err
 	}

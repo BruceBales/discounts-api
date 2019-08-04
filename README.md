@@ -100,7 +100,7 @@ smembers discount_log
 
 ### Adding More Products
 
-The product list is stored in MySQL as a JSON array string called `product_list` in `webstore.products`. To add more products, add another item to this JSON array.
+The product list is stored in MySQL as a JSON array string in a column called `product_list` in `webstore.product_sets`. To add more products, add another item to this JSON array.
 
 
 ## Room for improvement

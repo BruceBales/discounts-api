@@ -1,13 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS webstore;
 USE webstore;
-CREATE TABLE `products` (
+CREATE TABLE `product_sets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_list` varchar(20000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
-INSERT INTO `products` (`id`, `product_list`) VALUES (
+INSERT INTO `product_sets` (`id`, `product_list`) VALUES (
     1,
     '
 [
