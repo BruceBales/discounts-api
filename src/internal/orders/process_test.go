@@ -1,8 +1,8 @@
 package orders
 
 import (
-	"math"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -81,7 +81,7 @@ func TestGetOrder_error(t *testing.T) {
 	}
 }
 
-func TestProcessOrder_general(t *testing.T) {
+func TestProcessOrder(t *testing.T) {
 	products := []dto.Product{
 		{
 			ID:          "B103",
@@ -113,145 +113,64 @@ func TestProcessOrder_general(t *testing.T) {
 				UnitPrice: 49.50,
 				Total:     148.5,
 			},
+			{
+				ProductID: "C123",
+				Quantity:  3,
+				UnitPrice: 1000,
+				Total:     3000,
+			},
 		},
-		Total: 226.2,
+		Total: 3226.2,
 	}
 
 	expected := Result{
-		Order:     `{"id":"1","customer-id":"1","items":[{"product-id":"B103","quantity":"6","unit-price":"12.95","total":"77.7"},{"product-id":"A102","quantity":"3","unit-price":"49.5","total":"148.5"}],"total":"226.2"}`,
-		Discounts: `{"FirstToolDiscount":9.9,"switchDiscount":12.95}`,
-		Total:     203.35,
+		Order: &Order{
+			ID:         "1",
+			CustomerID: "1",
+			Items: []dto.Item{
+				{
+					ProductID: "B103",
+					Quantity:  6,
+					UnitPrice: 12.95,
+					Total:     77.7,
+				},
+				{
+					ProductID: "A102",
+					Quantity:  3,
+					UnitPrice: 49.50,
+					Total:     148.5,
+				},
+				{
+					ProductID: "C123",
+					Quantity:  3,
+					UnitPrice: 1000,
+					Total:     3000,
+				},
+			},
+			Total: 3226.2,
+		},
+		Discounts: map[string]float64{
+			"FirstToolDiscount":         9.9,
+			"TenPercentOverOneThousand": 2903.58,
+			"switchDiscount":            12.95,
+		},
+		Total: 2880.73,
 	}
 
-	processed, err := order.ProcessOrder(products)
+	processed := order.ProcessOrder(products)
+
+	match := reflect.DeepEqual(expected, processed)
+
+	exp, err := expected.String()
 	if err != nil {
-		t.Error("Unexpected error: ", err)
+		t.Error("Error converting expected to string: ", err)
 	}
-
-	if expected != processed {
-		t.Errorf("Expected: %v\n Actual: %v\n", expected, processed)
-	}
-}
-
-func TestProcessOrder_overOneThousand(t *testing.T) {
-	products := []dto.Product{
-		{
-			ID:          "B103",
-			Description: "Switch with motion detector",
-			Category:    2,
-			Price:       12.95,
-		},
-	}
-
-	order := Order{
-		ID:         "1",
-		CustomerID: "1",
-		Items: []dto.Item{
-			{
-				ProductID: "B103",
-				Quantity:  1,
-				UnitPrice: 2000,
-				Total:     2000,
-			},
-		},
-		Total: 2000,
-	}
-
-	expected := Result{
-		Order:     `{"id":"1","customer-id":"1","items":[{"product-id":"B103","quantity":"1","unit-price":"2000","total":"2000"}],"total":"2000"}`,
-		Discounts: `{"TenPercentOverOneThousand":1800}`,
-		Total:     1800,
-	}
-
-	processed, err := order.ProcessOrder(products)
+	proc, err := processed.String()
 	if err != nil {
-		t.Error("Unexpected error: ", err)
-	}
-	if expected != processed {
-		t.Errorf("Expected: %v\n Actual: %v\n", expected, processed)
-	}
-}
-
-func TestProcessOrder_error(t *testing.T) {
-	products := []dto.Product{
-		{
-			ID:          "B103",
-			Description: "Switch with motion detector",
-			Category:    2,
-		},
-		{
-			ID:          "A102",
-			Description: "Electric screwdriver",
-			//Mess up json Marshaling with infinite number
-			Price: math.Inf(1),
-		},
+		t.Error("Error converting actual to string: ", err)
 	}
 
-	order := Order{
-		ID:         "1",
-		CustomerID: "1",
-		Items: []dto.Item{
-			{
-				ProductID: "B103",
-				Quantity:  6,
-				UnitPrice: 12.95,
-				//Mess up json Marshaling with infinite number
-				Total: math.Inf(1),
-			},
-			{
-				ProductID: "A102",
-				Quantity:  3,
-				UnitPrice: 49.50,
-				Total:     148.5,
-			},
-		},
-		//Mess up json Marshaling with infinite number
-		Total: math.Inf(1),
-	}
-
-	_, err := order.ProcessOrder(products)
-	if err == nil {
-		t.Error("Expected error, but recieved none")
-	}
-}
-
-func TestProcessOrder_error_originalOrder(t *testing.T) {
-	products := []dto.Product{
-		{
-			ID:          "B103",
-			Description: "Switch with motion detector",
-			Category:    2,
-		},
-		{
-			ID:          "A102",
-			Description: "Electric screwdriver",
-			Price:       1337,
-		},
-	}
-
-	order := Order{
-		ID:         "1",
-		CustomerID: "1",
-		Items: []dto.Item{
-			{
-				ProductID: "B103",
-				Quantity:  6,
-				UnitPrice: 12.95,
-				//Mess up json Marshaling with infinite number
-				Total: math.Inf(1),
-			},
-			{
-				ProductID: "A102",
-				Quantity:  3,
-				UnitPrice: 49.50,
-				Total:     148.5,
-			},
-		},
-		Total: 1337,
-	}
-
-	_, err := order.ProcessOrder(products)
-	if err == nil {
-		t.Error("Expected error, but recieved none")
+	if !match {
+		t.Errorf("Expected: %v\n Actual: %v\n", exp, proc)
 	}
 }

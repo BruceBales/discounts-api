@@ -18,16 +18,13 @@ func GetOrder(r *http.Request, p []dto.Product) (Result, error) {
 		return Result{}, err
 	}
 
-	processed, err := o.ProcessOrder(p)
-	if err != nil {
-		return Result{}, err
-	}
+	processed := o.ProcessOrder(p)
 
 	return processed, nil
 }
 
 //ProcessOrder uses values from an order and finds matching discounts
-func (o *Order) ProcessOrder(p []dto.Product) (Result, error) {
+func (o *Order) ProcessOrder(p []dto.Product) Result {
 	//discountMap contains a list of discounts and their Euro values
 	var discountMap = make(map[string]float64)
 	//total is a copy of the Order's total, so that the original order total is preserved
@@ -73,24 +70,10 @@ func (o *Order) ProcessOrder(p []dto.Product) (Result, error) {
 		discountMap["TenPercentOverOneThousand"] = o.Total - (o.Total * 0.10)
 	}
 
-	//Create JSON string of discount list
-	dbytes, err := json.Marshal(discountMap)
-	if err != nil {
-		return Result{}, err
-	}
-	dstring := string(dbytes)
-
-	//Create JSON string of original order
-	obytes, err := json.Marshal(o)
-	if err != nil {
-		return Result{}, err
-	}
-	ostring := string(obytes)
-
 	//Return final result
 	return Result{
-		Order:     ostring,
-		Discounts: dstring,
+		Order:     o,
+		Discounts: discountMap,
 		Total:     total,
-	}, nil
+	}
 }
