@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/brucebales/discounts-api/src/internal/dao"
 	"github.com/brucebales/discounts-api/src/internal/dto"
@@ -39,6 +40,7 @@ func main() {
 			w.WriteHeader(500)
 			fmt.Fprint(w, "Error loading products")
 			fmt.Println("Could not load products: ", err)
+			return
 		}
 
 		//Fetch results by inputting current product list and HTTP request into GetOrder
@@ -47,6 +49,7 @@ func main() {
 			w.WriteHeader(500)
 			fmt.Fprint(w, "Error processing order")
 			fmt.Println("Could not get order: ", err)
+			return
 		}
 
 		//Create response JSON string
@@ -55,9 +58,10 @@ func main() {
 			w.WriteHeader(500)
 			fmt.Fprint(w, "Error creating response")
 			fmt.Println("Could not return response: ", err)
+			return
 		}
 		//Log discounts to Redis
-		redis.SAdd("discount_log", response)
+		redis.SAdd("discount_log", fmt.Sprintf(`[{"time":"%s","result":%s}]`, time.Now(), response))
 
 		//Print response
 		fmt.Fprint(w, response)
