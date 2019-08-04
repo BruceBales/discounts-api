@@ -48,8 +48,6 @@ func main() {
 			fmt.Fprint(w, "Error processing order")
 			fmt.Println("Could not get order: ", err)
 		}
-		//Log discounts to Redis
-		redis.SAdd("discount_log", result.Order)
 
 		//Create response JSON string
 		response, err := result.String()
@@ -58,6 +56,9 @@ func main() {
 			fmt.Fprint(w, "Error creating response")
 			fmt.Println("Could not return response: ", err)
 		}
+		//Log discounts to Redis
+		redis.SAdd("discount_log", response)
+
 		//Print response
 		fmt.Fprint(w, response)
 	})

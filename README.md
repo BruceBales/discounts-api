@@ -4,7 +4,7 @@ An API for 24Metrics that consumes POST requests from a webstore and calculates 
 
 ## Overview
 
-This API takes customer orders, and applies various discounts to them. Orders are sent as a POST request with a JSON body, and results are returned as a JSON body containing the original order, an array of discounts(with monetary values), and a "total" with discounts applied to it.
+This API takes customer orders, and applies various discounts to them. Orders are sent as a POST request with a JSON body, and results are returned as a JSON body containing the original order, a list of discounts(with monetary values), and a "total" with discounts applied to it.
 
 The same JSON body as given in the HTTP response is also logged in a Redis database.
 
@@ -21,7 +21,7 @@ Please ensure that the project is cloned into your GOPATH under the correct name
 
 ### Building
 
-To get started, first install the projects dependencies:
+To get started, first install the project's dependencies:
 
 ```
 git submodule update --init
@@ -111,3 +111,4 @@ A few things that I would like to complete if I end up having time:
 - An authentication system using API keys
 - Further abstraction of discounts, allowing new discounts to be defined in a database.
   - Ideally, there would be a set of "discount type" functions that are simply plugging in variables that are grabbed from a MySQL table.
+- A separate endpoint for adding products
