@@ -73,24 +73,10 @@ func (o *Order) ProcessOrder(p []dto.Product) (Result, error) {
 		discountMap["TenPercentOverOneThousand"] = o.Total - (o.Total * 0.10)
 	}
 
-	//Create JSON string of discount list
-	dbytes, err := json.Marshal(discountMap)
-	if err != nil {
-		return Result{}, err
-	}
-	dstring := string(dbytes)
-
-	//Create JSON string of original order
-	obytes, err := json.Marshal(o)
-	if err != nil {
-		return Result{}, err
-	}
-	ostring := string(obytes)
-
 	//Return final result
 	return Result{
-		Order:     ostring,
-		Discounts: dstring,
+		Order:     o,
+		Discounts: discountMap,
 		Total:     total,
 	}, nil
 }

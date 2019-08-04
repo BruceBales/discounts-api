@@ -33,8 +33,8 @@ type Order struct {
 
 //Result is returned to main as the final copy of all processed data
 type Result struct {
-	Order     string
-	Discounts string
+	Order     *Order
+	Discounts map[string]float64
 	Total     float64
 }
 
